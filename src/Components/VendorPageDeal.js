@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import {Badge,OverlayTrigger,Popover,Modal,Button} from 'react-bootstrap';
+import logo from "../assets/logo.png";
 
 const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
@@ -13,6 +14,10 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const [currentSlot, setCurrentSlot] = useState(slots[0]);
   const [timing,setTiming] = useState({});
   const time={"Sun":"10 AM - 06 PM", "Tue":"10 AM - 08 PM", "Wed":"10 AM - 08 PM", "Sat":"10 AM - 08 PM"}
+  
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const popover = (
   <Popover id="popover-basic">
@@ -167,6 +172,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   };
   const MovieDeal = () => {
     return (
+
       <div className="row">
         <div className="col-6 col-lg-12">
           <small>
@@ -312,6 +318,37 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   );
   return (
     <Fragment>
+      <Modal size="lg" show={show} onHide={handleClose}>
+        <Modal.Header style={{backgroundColor:"#E0E0E0"}} closeButton>
+          <Modal.Title>Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="left">
+            <div className="how-it-works how-it-works-show">
+              {/* <button className="btn-close fr" type="button"></button> */}
+
+              <div className="row">
+                
+              </div>
+              <div className="how-it-works-footer">
+                <img
+                  alt="All For You "
+                  className="img-responsive"
+                  height="251"
+                  src={logo}
+                  width="251"
+                />
+                <p>Experience the world around you.</p>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div style={{ marginBottom: "10px" }}>
         <div
           className="row"
@@ -361,7 +398,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
             <div className="dropdown-divider"></div>
             <div className="d-flex justify-content-end">
               <div className="p-2">
-                <button
+                <button onClick={handleShow} 
                   className="btn btn-primary"
                   style={{ backgroundColor: "inherit", border: "1px solid purple", color:"purple" }}
                 >
