@@ -1,0 +1,16 @@
+{
+  "name": "sub deal 2",
+  "description": "sub deal 2 description",
+  "img": "sub.png",
+  "merchant": "5f33e27434498d4a28217fbc",
+  "price": 200,
+  "commision": 45,
+  "discountPercent": 25,
+  "prefernceOrder": 1,
+  "category": "5f2eac9be777bc297c5ae0e9",
+  "valide": {
+    "from": "Aug-3-2020",
+    "to": "aug 34 -2020"
+  },
+  "location": "delhi"
+}

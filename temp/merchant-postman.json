@@ -1,0 +1,34 @@
+{
+  "businessName": "spa",
+  "email": "spa@gmail.com",
+  "phoneNo": 1234567809,
+  "password": "spa123",
+  "confirmPassword": "spa123",
+  "status": "active",
+  "businessInfo": {
+    "businessType": "single",
+    "title": "spaa",
+    "logo": "spa_logo.png",
+    "description": "spa treatment"
+  },
+
+  "contactInfo": {
+    "firstName": "spa-qwe",
+    "lastName": "spa-ewq",
+    "altMobile": 9876543210,
+    "landline": 123456,
+    "communicationEmail": "communication-spa@gmail.com",
+    "about": "about in contactInfo-spa"
+  },
+  "locationInfo": {
+    "state": "harayana",
+    "city": "faridabad",
+    "area": "sec-9",
+    "addrLine1": "adr_line-1",
+    "addrLine2": "adr_line-2",
+    "landmark": "landmark-1",
+    "zipcode": 123321
+  },
+  "images": ["spa.png", "spa2.png"],
+  "categories": ["5f2eacb1e777bc297c5ae0eb"]
+}

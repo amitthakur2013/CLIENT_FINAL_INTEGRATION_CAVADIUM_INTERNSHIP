@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "5f2d524cf3d8605860bb5aee"
+  },
+  "subcategories": [],
+  "name": "Food and drink",
+  "img": "Food_2019_08_10_00_16.png",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f2d526d8d44e24534b13f00"
+  },
+  "subcategories": [],
+  "name": "Spa",
+  "img": "spa_2019_08_10_00_10.png",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f2d52818d44e24534b13f01"
+  },
+  "subcategories": [],
+  "name": "Health",
+  "img": "Health_2019_08_10_00_10.png",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f2d528d8d44e24534b13f02"
+  },
+  "subcategories": [],
+  "name": "Movies",
+  "img": "Movie_icon_2019_08_10_00_09.png",
+  "__v": 0
+}]

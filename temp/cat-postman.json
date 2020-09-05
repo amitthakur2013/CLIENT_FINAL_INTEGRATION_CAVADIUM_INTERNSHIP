@@ -1,0 +1,15 @@
+{
+  "name": "abc",
+  "description": "desc1",
+  "img": "bbq_2020_07_10_21_56.jpg",
+  "price": 100,
+  "commision": 10,
+  "discountPercent": 2,
+  "prefernceOrder": 1,
+  "category": "5f2eac9be777bc297c5ae0e9",
+  "valide": {
+    "from": "1596980266460",
+    "to": "1596980281635"
+  },
+  "createdOn": "1596980281635"
+}
