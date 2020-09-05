@@ -4,6 +4,7 @@ import VendorPageCarousel from "./VendorPageCarousel";
 import VendorPageDescription from "./VendorPageDescription";
 import VendorPageOrders from "./VendorPageOrders";
 import VendorPageDeal from "./VendorPageDeal";
+import swal from 'sweetalert';
 
 const VendorPage = ({ match }) => {
   const [deals, setDeals] = useState([]);
@@ -12,6 +13,14 @@ const VendorPage = ({ match }) => {
 
   const addToCart = (id, name, price) => {
     const qty = (cart[id] ? cart[id].qty : 0) + 1;
+    if (qty>=6) {
+      return swal({
+        title: "Max Qty Limit reached!",
+        text: "",
+        icon: "info",
+        button: "Close",
+      });
+    }
     const newCart = { ...cart };
 
     newCart[id] = {
@@ -80,6 +89,7 @@ const VendorPage = ({ match }) => {
                     removeFromCart={removeFromCart}
                     key={deal._id}
                     deal={deal}
+                    type={"Spa"}
                   />
                 ))}
             </div>

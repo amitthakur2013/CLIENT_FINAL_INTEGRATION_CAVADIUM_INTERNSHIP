@@ -1,6 +1,315 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import {Badge,OverlayTrigger,Popover,Modal,Button} from 'react-bootstrap';
 
-const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart }) => {
+const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
+  const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
+  const [tickets, setTickets] = useState([]);
+  const [searchVal, setSearchVal] = useState("");
+  const [slots, setSlots] = useState([
+    "aug 25: 1pm to 2pm",
+    "aug 27: 1pm to 3pm",
+    "aug 27: 4pm to 9pm",
+  ]);
+  const [currentSlot, setCurrentSlot] = useState(slots[0]);
+  const [timing,setTiming] = useState({});
+  const time={"Sun":"10 AM - 06 PM", "Tue":"10 AM - 08 PM", "Wed":"10 AM - 08 PM", "Sat":"10 AM - 08 PM"}
+
+  const popover = (
+  <Popover id="popover-basic">
+    <Popover.Title as="h3">Timings</Popover.Title>
+    <Popover.Content>
+    <ul>
+      {Object.keys(time).map((key)=>
+        <li><b>{key}</b> :  <span style={{float:"right"}}>{time[key]}</span></li>
+        )}
+        </ul>
+    </Popover.Content>
+  </Popover>
+);
+
+  const ActivityDeal = () => {
+    return (
+      <div className="row">
+        <div className="col-6 col-lg-12">
+          <small>
+            Price:
+            <del>{deal.price}</del>
+          </small>
+          <p>
+            <strong>
+              After discount:{" "}
+              {deal.price - (deal.price * deal.discountPercent) / 100}
+            </strong>
+          </p>
+        </div>
+        <div className="col-6 col-lg-12">
+          <h1>Package details</h1>
+          <div className="col-6 col-lg-12">
+            <div className="d-flex justify-content-end">
+              <label>
+                select slot:
+                <select
+                  value={currentSlot}
+                  onChange={(e) => setCurrentSlot(e.target.value)}
+                  onBlur={(e) => setCurrentSlot(e.target.value)}
+                  disabled={!slots.length}
+                >
+                  {slots.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col-6 col-lg-12">
+              <div className="d-flex justify-content-end">
+                <p>Number of tickets: </p>
+                <div className="p-2">
+                  <button
+                    onClick={() => removeFromCart(deal._id)}
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    -
+                  </button>
+                </div>
+                <div className="p-2" style={{ paddingTop: "10px !important" }}>
+                  {qty}
+                </div>
+                <div className="p-2">
+                  <button
+                    onClick={() =>
+                      addToCart(
+                        deal._id,
+                        deal.name,
+                        deal.price - (deal.price * deal.discountPercent) / 100,
+                        currentSlot
+                      )
+                    }
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  const HotelDeal = () => {
+    return (
+      <div className="row">
+        <div className="col-6 col-lg-12">
+          <small>
+            Price:
+            <del>{deal.price}</del>
+          </small>
+          <p>
+            <strong>
+              After discount:{" "}
+              {deal.price - (deal.price * deal.discountPercent) / 100}
+            </strong>
+          </p>
+        </div>
+        <div className="col-6 col-lg-12">
+          <h1>Package details</h1>
+          <div className="col-6 col-lg-12">
+            <div className="d-flex justify-content-end">
+              <h4>Rooms: </h4>
+              <div className="p-2">
+                <button
+                  onClick={() => removeFromCart(deal._id)}
+                  className="btn btn-sm btn-primary"
+                  style={{
+                    backgroundColor: "purple",
+                    border: "purple",
+                  }}
+                >
+                  -
+                </button>
+              </div>
+              <div className="p-2" style={{ paddingTop: "10px !important" }}>
+                {qty}
+              </div>
+              <div className="p-2">
+                <button
+                  onClick={() =>
+                    addToCart(
+                      deal._id,
+                      deal.name,
+                      deal.price - (deal.price * deal.discountPercent) / 100
+                    )
+                  }
+                  className="btn btn-sm btn-primary"
+                  style={{
+                    backgroundColor: "purple",
+                    border: "purple",
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  const MovieDeal = () => {
+    return (
+      <div className="row">
+        <div className="col-6 col-lg-12">
+          <small>
+            Price:
+            <del>{deal.price}</del>
+          </small>
+          <p>
+            <strong>
+              After discount:{" "}
+              {deal.price - (deal.price * deal.discountPercent) / 100}
+            </strong>
+          </p>
+        </div>
+        <div className="col-6 col-lg-12">
+          <div className="p-2" style={{ paddingTop: "10px !important" }}>
+            Seats:
+          </div>
+          {tickets.map((t) => (
+            <span
+              className="badge badge-primary"
+              key={t}
+              style={{ margin: "2px" }}
+            >
+              {t}
+
+              <button
+                className="close"
+                aria-label="Close"
+                style={{ fontSize: "100%", fontWeight: 1000 }}
+                type="click"
+                onClick={() => {
+                  let ticketArr = [...tickets];
+                  ticketArr = ticketArr.filter((ele) => ele !== t);
+                  setTickets(ticketArr);
+                  let remaining = [...datalist];
+                  remaining.push(t);
+                  remaining.sort();
+                  setDatalist(remaining);
+                  ticketArr = ticketArr.filter((ele) => ele !== t);
+                  setTickets(ticketArr);
+                  removeFromCart(t);
+                }}
+              >
+                <i className="fa fa-times" aria-hidden="true "></i>
+              </button>
+
+              {/* </i> */}
+            </span>
+          ))}
+
+          <input
+            type="search"
+            list="ticketsListData"
+            value={searchVal}
+            className="form-control prompt"
+            onChange={(e) => setSearchVal(e.target.value)}
+            autoComplete="on"
+            style={{ width: "100px" }}
+          />
+          <datalist id="ticketsListData">
+            {datalist.map((item) => (
+              <option value={item} key={item} />
+            ))}
+          </datalist>
+          <span className="input-group-btn">
+            <input
+              className="btn btn-default search-btn"
+              type="submit"
+              onClick={(e) => {
+                if (!searchVal) return;
+                const ticketArr = [...tickets];
+                ticketArr.push(searchVal);
+                addToCart(
+                  searchVal,
+                  deal.name + " " + searchVal,
+                  deal.price - (deal.price * deal.discountPercent) / 100
+                );
+                setTickets(ticketArr);
+
+                let remaining = [...datalist];
+                remaining = remaining.filter((t) => t !== searchVal);
+                setDatalist(remaining);
+                setSearchVal("");
+              }}
+            />
+          </span>
+        </div>
+      </div>
+    );
+  };
+  const DefaultDeal = () => (
+    <div className="col-12 col-lg-3">
+
+      <div className="row">
+        <div className="col-6 col-lg-12">
+        
+          <p>
+              <del className="text-muted">Rs.{deal.price}</del>
+              {"  "}
+              <strong>Rs.{deal.price - (deal.price * deal.discountPercent) / 100}</strong><br/>
+              <small style={{color:"gray"}}>Inc. of all taxes</small>
+          </p>
+        </div>
+        <div className="col-6 col-lg-12">
+          <div className="d-flex justify-content-end">
+            <div className="p-2">
+              {qty ?<button
+                onClick={() => removeFromCart(deal._id)}
+                className="btn btn-sm btn-primary"
+                style={{
+                  backgroundColor: "purple",
+                  border: "purple",
+                }}
+              >
+                -
+              </button>:""}
+            </div>
+            <div className="p-2" style={{ paddingTop: "10px !important" }}>
+              {qty?qty:""}
+            </div>
+            <div className="p-2">
+              <button
+                onClick={() =>
+                  addToCart(
+                    deal._id,
+                    deal.name,
+                    deal.price - (deal.price * deal.discountPercent) / 100
+                  )
+                }
+                className="btn btn-sm btn-primary"
+                style={{
+                  backgroundColor: "purple",
+                  border: "purple",
+                }}
+              >
+                {qty?"+":"  Add + "}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   return (
     <Fragment>
       <div style={{ marginBottom: "10px" }}>
@@ -9,100 +318,54 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart }) => {
           style={{
             backgroundColor: "white",
             padding: "10px 5px 10px 5px",
-            borderRadius: "10px",
+            borderRadius: "3px",
             border: "1px solid #E0DEDE",
             boxShadow: "-6px -6px 16px #fff, 6px 6px 16px #d1cdc7",
           }}
         >
-          <div className="col-12 col-lg-3">
+          <div className="col-12 col-lg-3"><br/><br/>
             <img
               alt={deal.name}
-              src={`http://localhost:3124/deals/${deal.img}`}
+              src="https://img.freepik.com/free-photo/spa-arrangement-with-towel-soap-salt_23-2148268482.jpg?size=626&ext=jpg"
               className="img-fluid"
-              style={{ borderRadius: "10px", width: "100%" }}
+              style={{ borderRadius: "5px", width: "100%" }}
             />
-          </div>
-          <div className="col-12 col-lg-9">
-            <h5 className="text-muted">
-              <strong>{deal.name}</strong>
-              <p style={{ marginBottom: "10px" }}>{deal.description}</p>
+               </div>
+          <div className="col-12 col-lg-9"><br/>
+            <h5 >
+              <strong>{/*deal.name*/}Abhyanga Full Body Massage (45 mins)</strong>
             </h5>
+            <Badge style={{float:"right",marginRight:"10px"}} variant="info">{deal.discountPercent}% OFF</Badge>
+          <p className="text-muted" style={{ marginBottom: "10px" }}>{/*deal.description*/}Full Body Massage at a cheaper rate and with quality time</p>
             <div className="row">
               <div className="col-12 col-lg-9">
-                <p style={{ marginBottom: "10px" }}>Free Cancellation</p>
+                <p style={{ marginBottom: "10px",color:"green" }}>Free Cancellation</p>
                 <small>
-                  <strong>Valid For :</strong> all |
-                  <strong>Valid from :</strong> {deal.valide.from}
-                  <strong>Valid to :</strong> {deal.valide.to}
-                  <strong>Timings :</strong> all days
+                  <span className="text-muted">Valid For :</span> <strong> 1 Person</strong> |{" "}
+                  <span className="text-muted">Valid on :</span><strong> {Object.keys(time).map((key)=> <strong> {key} |</strong>
+        )} </strong> <br/>
+                  
+                  <span className="text-muted">Timings :</span><strong> {time["Sun"]} </strong><OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                  <button style={{backgroundColor:"inherit",color:"gray",border:"none",textDecoration:"underline"}}>SEE ALL</button></OverlayTrigger>
                 </small>
+                <br />
+
+                {type === "Movies" && <MovieDeal />}
+                {type === "Hotels" && <HotelDeal />}
+                {type === "Activity" && <ActivityDeal />}
               </div>
-              <div className="col-12 col-lg-3">
-                <div className="row">
-                  <div className="col-6 col-lg-12">
-                    <small>
-                      Price:
-                      <del>{deal.price}</del>
-                    </small>
-                    <p>
-                      <strong>
-                        After discount:{" "}
-                        {deal.price - (deal.price * deal.discountPercent) / 100}
-                      </strong>
-                    </p>
-                  </div>
-                  <div className="col-6 col-lg-12">
-                    <div className="d-flex justify-content-end">
-                      <div className="p-2">
-                        <button
-                          onClick={() => removeFromCart(deal._id)}
-                          className="btn btn-sm btn-primary"
-                          style={{
-                            backgroundColor: "purple",
-                            border: "purple",
-                          }}
-                        >
-                          -
-                        </button>
-                      </div>
-                      <div
-                        className="p-2"
-                        style={{ paddingTop: "10px !important" }}
-                      >
-                        {qty}
-                      </div>
-                      <div className="p-2">
-                        <button
-                          onClick={() =>
-                            addToCart(
-                              deal._id,
-                              deal.name,
-                              deal.price -
-                                (deal.price * deal.discountPercent) / 100
-                            )
-                          }
-                          className="btn btn-sm btn-primary"
-                          style={{
-                            backgroundColor: "purple",
-                            border: "purple",
-                          }}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {type !== "Movies" &&
+                type !== "Hotels" &&
+                type !== "Activity" && <DefaultDeal />}
             </div>
             <div className="dropdown-divider"></div>
             <div className="d-flex justify-content-end">
               <div className="p-2">
                 <button
                   className="btn btn-primary"
-                  style={{ backgroundColor: "purple", border: "0px" }}
+                  style={{ backgroundColor: "inherit", border: "1px solid purple", color:"purple" }}
                 >
-                  View Details
+                  <strong>View Details</strong>
                 </button>
               </div>
             </div>

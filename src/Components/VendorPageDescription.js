@@ -20,6 +20,8 @@ const VendorPageDescription = ({ vendor }) => {
             <p className="card-text" style={{ padding: "15px 5px 15px 5px" }}>
               {vendor.businessInfo.description}
             </p>
+            <button style={{backgroundColor:"inherit",border:"none",marginBottom:"auto"}}><strong style={{color:"#35A7FF"}}>View on map</strong></button>
+              <br/>
             <button
               className="btn btn-outline-dark"
               style={{ margin: "10px 0px 10px 0px" }}

@@ -7,19 +7,19 @@ const OrderDealItem = ({ item, id }) => {
       <div>
         <div className="d-flex justify-content-between">
           <div className="p-2">
-            <h6 className="text-muted">
-              <strong>{item.name}</strong>
-            </h6>
+            <small className="text-muted">
+              {item.name}
+            </small>
           </div>
           <div className="p-2">
-            <h6 className="text-muted">
+            <small className="text-muted">
               Rs . {item.price} x{item.qty}
-            </h6>
+            </small>
           </div>
           <div className="p-2">
-            <h6>
-              <strong>Rs .{item.qty * item.price}</strong>
-            </h6>
+            <small>
+              <strong className="text-muted">Rs. {item.qty * item.price}</strong>
+            </small>
           </div>
         </div>
       </div>
