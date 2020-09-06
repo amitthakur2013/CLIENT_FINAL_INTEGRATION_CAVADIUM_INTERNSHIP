@@ -1,9 +1,31 @@
 import React, { Fragment } from "react";
+import {Modal,Button} from 'react-bootstrap';
+import MapComponent from './MapComponent';
 
-const VendorPageDescription = ({ vendor }) => {
+const VendorPageDescription = ({ vendor,handleClosemap,handleShowmap,showmap }) => {
   if (!vendor._id) return null;
+
   return (
     <Fragment>
+      <Modal size="lg" show={showmap} onHide={handleClosemap}>
+        <Modal.Header style={{backgroundColor:"#E0E0E0"}} closeButton>
+          <Modal.Title>Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="left">
+            <div className="how-it-works how-it-works-show">
+              {/* <button className="btn-close fr" type="button"></button> */}
+
+              <div style={{height:"380px",marginTop:"-30px"}} className="row">
+                <MapComponent address={vendor.locationInfo}/>
+              </div>
+              
+            </div>
+          </div>
+        </Modal.Body>
+        
+      </Modal>
+
       <div>
         <div
           className="card"
@@ -20,7 +42,7 @@ const VendorPageDescription = ({ vendor }) => {
             <p className="card-text" style={{ padding: "15px 5px 15px 5px" }}>
               {vendor.businessInfo.description}
             </p>
-            <button style={{backgroundColor:"inherit",border:"none",marginBottom:"auto"}}><strong style={{color:"#35A7FF"}}>View on map</strong></button>
+            <button onClick={handleShowmap}  style={{backgroundColor:"inherit",border:"none",marginBottom:"auto"}}><strong style={{color:"#35A7FF"}}>View on map</strong></button>
               <br/>
             <button
               className="btn btn-outline-dark"

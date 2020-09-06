@@ -11,6 +11,10 @@ const VendorPage = ({ match }) => {
   const [vendor, setVendor] = useState({});
   const [cart, setCart] = useState({});
 
+  const [showmap, setShowmap] = useState(false);
+  const handleClosemap = () => setShowmap(false);
+  const handleShowmap = () => setShowmap(true)
+
   const addToCart = (id, name, price) => {
     const qty = (cart[id] ? cart[id].qty : 0) + 1;
     if (qty>=6) {
@@ -71,7 +75,7 @@ const VendorPage = ({ match }) => {
               <VendorPageCarousel images={vendor.images} />
             </div>
             <div className="col-12 col-lg-4">
-              <VendorPageDescription vendor={vendor} />
+              <VendorPageDescription vendor={vendor} handleShowmap={handleShowmap} handleClosemap={handleClosemap} showmap={showmap}/>
             </div>
           </div>
 

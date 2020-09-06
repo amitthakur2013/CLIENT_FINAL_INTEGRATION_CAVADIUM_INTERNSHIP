@@ -19,6 +19,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
   const popover = (
   <Popover id="popover-basic">
     <Popover.Title as="h3">Timings</Popover.Title>
@@ -318,6 +319,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   );
   return (
     <Fragment>
+
       <Modal size="lg" show={show} onHide={handleClose}>
         <Modal.Header style={{backgroundColor:"#E0E0E0"}} closeButton>
           <Modal.Title>Details</Modal.Title>
