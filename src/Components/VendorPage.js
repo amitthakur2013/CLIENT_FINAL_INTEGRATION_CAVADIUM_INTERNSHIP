@@ -93,11 +93,11 @@ const VendorPage = ({ match }) => {
                     removeFromCart={removeFromCart}
                     key={deal._id}
                     deal={deal}
-                    type={"Spa"}
+                    type={deal.category.name}
                   />
                 ))}
             </div>
-            <div className="col-12 col-lg-4">
+            <div style={{position:"relative"}} className="col-12 col-lg-4">
               <VendorPageOrders cart={cart} />
             </div>
           </div>

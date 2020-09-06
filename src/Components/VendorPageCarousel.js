@@ -14,11 +14,13 @@ const VendorPageCarousel = ({ images }) => {
           images.map((i) => (
             <Carousel.Item key={i}>
               <img
-                src={`http://localhost:3124/merchants/${i}`}
+                src={`http://localhost:3124/uploads/${i}`}
                 alt={i}
                 className="fluid-img"
                 style={{
-                  borderRadius: "10px",
+                  borderRadius: "5px",
+                  width:"100%",
+                  height:"250px"
                 }}
               />
             </Carousel.Item>

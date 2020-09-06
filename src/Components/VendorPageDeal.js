@@ -1,6 +1,7 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import {Badge,OverlayTrigger,Popover,Modal,Button} from 'react-bootstrap';
 import logo from "../assets/logo.png";
+import { Markup } from 'interweave';
 
 const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
@@ -13,13 +14,21 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   ]);
   const [currentSlot, setCurrentSlot] = useState(slots[0]);
   const [timing,setTiming] = useState({});
-  const time={"Sun":"10 AM - 06 PM", "Tue":"10 AM - 08 PM", "Wed":"10 AM - 08 PM", "Sat":"10 AM - 08 PM"}
-  
+  //const time={"Sun":"10 AM - 06 PM", "Tue":"10 AM - 08 PM", "Wed":"10 AM - 08 PM", "Sat":"10 AM - 08 PM"}
+  var time={}
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
+  async function bd(){
+    await deal.validOn.map((tm)=>
+      time[tm.day]=tm.slot
+    )
+    
+  }
+  bd();
+  console.log(time);
   const popover = (
   <Popover id="popover-basic">
     <Popover.Title as="h3">Timings</Popover.Title>
@@ -325,12 +334,14 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
           <Modal.Title>Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="left">
+          <div className="left container">
             <div className="how-it-works how-it-works-show">
               {/* <button className="btn-close fr" type="button"></button> */}
 
-              <div className="row">
-                
+              <div style={{marginTop:"-50px"}} className="row">
+                {deal.howtouse? <Markup content={deal.howtouse.info} />:""}<br/>
+                {deal.cancellationpolicy? <Markup content={deal.cancellationpolicy.info} />:""}<br/>
+                {deal.thingstoremember?<Markup content={deal.thingstoremember.info} />:""}
               </div>
               <div className="how-it-works-footer">
                 <img
@@ -365,17 +376,17 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
           <div className="col-12 col-lg-3"><br/><br/>
             <img
               alt={deal.name}
-              src="https://img.freepik.com/free-photo/spa-arrangement-with-towel-soap-salt_23-2148268482.jpg?size=626&ext=jpg"
+              src={`http://localhost:3124/uploads/${deal.img}`}
               className="img-fluid"
               style={{ borderRadius: "5px", width: "100%" }}
             />
                </div>
           <div className="col-12 col-lg-9"><br/>
             <h5 >
-              <strong>{/*deal.name*/}Abhyanga Full Body Massage (45 mins)</strong>
+              <strong>{deal.name}</strong>
             </h5>
             <Badge style={{float:"right",marginRight:"10px"}} variant="info">{deal.discountPercent}% OFF</Badge>
-          <p className="text-muted" style={{ marginBottom: "10px" }}>{/*deal.description*/}Full Body Massage at a cheaper rate and with quality time</p>
+          <p className="text-muted" style={{ marginBottom: "10px" }}>{deal.description}</p>
             <div className="row">
               <div className="col-12 col-lg-9">
                 <p style={{ marginBottom: "10px",color:"green" }}>Free Cancellation</p>
