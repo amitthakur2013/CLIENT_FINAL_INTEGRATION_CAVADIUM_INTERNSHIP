@@ -15,7 +15,7 @@ export const Checkout = () => {
 	  	const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
 	  	await setCartItem(resp.data);
 	  	var am=resp.data.reduce((val,key)=>{
-	  		return val+parseInt(key.price)
+	  		return val+(parseInt(key.price)*parseInt(key.qty))
 	  	},0);
 	  	setAmt(am);
 	  } catch(err) {
@@ -44,7 +44,7 @@ export const Checkout = () => {
   		var x={}
   		x["deal"]=ct.id
   		x["customer"]=user._id
-  		x["price"]=ct.price
+  		x["price"]=ct.price*ct.qty
   		x["promocode"]=""
   		x["discountedPrice"]=0
   		cart.push(x);
@@ -91,7 +91,7 @@ export const Checkout = () => {
   		var x={}
   		x["deal"]=ct.id
   		x["customer"]=user._id
-  		x["price"]=ct.price
+  		x["price"]=ct.price*ct.qty
   		x["promocode"]=""
   		x["discountedPrice"]=0
   		cart.push(x);
@@ -160,14 +160,17 @@ export const Checkout = () => {
               <table className="table">
                 <tr className="thead-light">
                   <th>Item</th>
-                  <th>Qty</th>
                   <th>Price</th>
+                  <th>Qty</th>
+                  <th>Total Price</th>
                 </tr>
                 {cartItem.map(ct=>
                 <tr>
                   <td>{ct.name}</td>
-                  <td>{ct.qty}</td>
                   <td>{ct.price}</td>
+                  <td>{ct.qty}</td>
+                  <td>{ct.price*ct.qty}</td>
+                  
                 </tr>)}
                 
               </table>

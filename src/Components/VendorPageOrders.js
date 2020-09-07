@@ -6,26 +6,29 @@ import axios from 'axios';
 const VendorPageOrders = ({ cart }) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [cartKeys, setCartKeys] = useState([]);
-  let user=JSON.parse(localStorage.getItem("user")).data;
+  if(localStorage.getItem("user")){
+  var user=JSON.parse(localStorage.getItem("user")).data;
+}
   useEffect(() => {
-    let cartDetails=[]
-    
-    Object.keys(cart).map(key=>{
-      let a={};
-      a["id"]=key; 
-      a["name"]=cart[key].name;
-      a["price"]=cart[key].price;
-      a["qty"]=cart[key].qty;
-      cartDetails.push(a);
-    })
-    console.log(cartDetails);
+    if(localStorage.getItem("user")){
+        let cartDetails=[]
+        
+        Object.keys(cart).map(key=>{
+          let a={};
+          a["id"]=key; 
+          a["name"]=cart[key].name;
+          a["price"]=cart[key].price;
+          a["qty"]=cart[key].qty;
+          cartDetails.push(a);
+        })
+        console.log(cartDetails);
 
-    (async function () {
-      await axios.post(`http://localhost:3124/api/customer/cart/${user._id}`,{
-        cartDetails
-      },{withCredentials:true})
-    })();
-
+        (async function () {
+          await axios.post(`http://localhost:3124/api/customer/cart/${user._id}`,{
+            cartDetails
+          },{withCredentials:true})
+        })();
+    }
     const cartKeys = Object.keys(cart);
     setCartKeys(cartKeys);
     if (!cartKeys.length) return;
@@ -63,7 +66,7 @@ const VendorPageOrders = ({ cart }) => {
               <b className="text-muted">Total Amount:</b> <span style={{float:"right"}}> <strong>Rs. {totalAmount}</strong></span><br/>
               <small className="text-muted">Inc. of all taxes</small>
             </p>
-            <button
+            {cartKeys.length && <button
               className="btn btn-primary"
               style={{
                 margin: "5px 0px 5px 0px",
@@ -75,7 +78,7 @@ const VendorPageOrders = ({ cart }) => {
               <Link to="/checkout" style={{ color: "white" }}>
                 Proceed To Checkout
               </Link>
-            </button>
+            </button>}
           </div>
         </div>
       </div>
