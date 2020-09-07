@@ -16,6 +16,14 @@ const VendorPage = ({ match }) => {
   const handleShowmap = () => setShowmap(true)
 
   const addToCart = (id, name, price,avl_qty) => {
+    if(!localStorage.getItem("user")){
+      return swal({
+        title: "Please LogIn to Add to Cart!",
+        text: "",
+        icon: "error",
+        button: "Close",
+      });
+    }
     const qty = (cart[id] ? cart[id].qty : 0) + 1;
     if(qty>avl_qty){
       return swal({

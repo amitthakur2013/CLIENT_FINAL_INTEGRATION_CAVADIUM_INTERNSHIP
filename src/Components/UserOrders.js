@@ -4,7 +4,7 @@ const UserOrders = () => {
   return (
     <>
       <UserOrderCard />
-      <UserOrderCard />
+     
     </>
   );
 };
