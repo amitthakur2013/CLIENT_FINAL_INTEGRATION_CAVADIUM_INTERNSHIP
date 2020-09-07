@@ -12,6 +12,7 @@ import Footer from "./Components/Footer";
 import MerchantsPage from "./Components/MerchantsPage";
 import CreateMerchant from "./Components/Admin/Merchant/CreateMerchant";
 import ResetForm from "./Components/ResetForm";
+import { Checkout } from "./Components/Checkout";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                   component={VendorPage}
                   {...props}
                 />
+                <Route exact path="/checkout" component={Checkout} {...props} />
                 <Route path="/user" component={UserPage} {...props} />
                 <Route exact path="/" component={Homepage} {...props} />
                 <Route

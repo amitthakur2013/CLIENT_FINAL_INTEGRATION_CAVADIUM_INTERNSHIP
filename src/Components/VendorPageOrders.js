@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import OrderDealItem from "./OrderDealItem";
+import { Link } from "react-router-dom";
 
 const VendorPageOrders = ({ cart }) => {
   const [totalAmount, setTotalAmount] = useState(0);
@@ -51,7 +52,9 @@ const VendorPageOrders = ({ cart }) => {
                 backgroundColor: "purple",
               }}
             >
-              Proceed To Checkout
+              <Link to="/checkout" style={{ color: "white" }}>
+                Proceed To Checkout
+              </Link>
             </button>
           </div>
         </div>
