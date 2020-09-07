@@ -60,7 +60,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     var x=g.selectedIndex;
     var y=g.options;
 
-    if (g==="Select") {
+    if (g.value==="Select") {
       return swal({
                   title: "Please Select valid slot!",
                   text: "",
