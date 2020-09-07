@@ -1,21 +1,88 @@
 import React, { Fragment, useState,useEffect } from "react";
-import {Badge,OverlayTrigger,Popover,Modal,Button} from 'react-bootstrap';
+import {Badge,OverlayTrigger,Popover,Modal,Button,Form} from 'react-bootstrap';
 import logo from "../assets/logo.png";
 import { Markup } from 'interweave';
+import swal from 'sweetalert';
+import moment from 'moment';
 
 const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
-  const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
-  const [tickets, setTickets] = useState([]);
-  const [searchVal, setSearchVal] = useState("");
-  const [slots, setSlots] = useState([
-    "aug 25: 1pm to 2pm",
-    "aug 27: 1pm to 3pm",
-    "aug 27: 4pm to 9pm",
-  ]);
-  const [currentSlot, setCurrentSlot] = useState(slots[0]);
+ // const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
+  //const [tickets, setTickets] = useState([]);
+ // const [searchVal, setSearchVal] = useState("");
+  const [date,setDate]=useState("");
+  const [slots,setSlots]=useState([]);
+  const [currentSlot, setCurrentSlot] = useState("");
+  const [movieId,setMovieId]=useState("")
+  const [currentslotqty,setCurrentslotqty]=useState(0)
+  const [tickprice,setTickprice]=useState(0)
+  var checkDate=new Date();
+  checkDate.setDate(checkDate.getDate()-1);
+
   const [timing,setTiming] = useState({});
   //const time={"Sun":"10 AM - 06 PM", "Tue":"10 AM - 08 PM", "Wed":"10 AM - 08 PM", "Sat":"10 AM - 08 PM"}
   var time={}
+  const [run,setRun]=useState(false)
+
+  const showSlots=async (e)=>{
+    document.querySelector("#slot-select").value="Select";
+    var q=qty
+    for (var i=1;i<=q;i++){
+      removeFromCart(deal._id)
+    }
+    if(new Date(e.target.value) < checkDate) {
+             return swal({
+                      title: "Past date not allowed!",
+                      text: "",
+                      icon: "info",
+                      button: "Close",
+                    });
+            }
+    var f=e.target.value;
+    // Remember to change movieAvailability to availability
+    var flag=0;
+    await deal.movieAvailability.map(async (avl)=>{
+      if (avl.day.toString() === e.target.value.toString()){
+        flag=1
+        await setSlots(avl.slot);
+        return;
+      }
+    })
+    await setDate(f.toString())
+    if (flag === 0) {
+    await setSlots([]);
+    await setCurrentSlot("");
+    }
+
+  }
+
+  const movieSlot=(e) => {
+    var g=e.target;
+    var x=g.selectedIndex;
+    var y=g.options;
+
+    if (g==="Select") {
+      return swal({
+                  title: "Please Select valid slot!",
+                  text: "",
+                  icon: "info",
+                  button: "Close",
+                });
+    }
+    var q=qty
+    for (var i=1;i<=q;i++){
+      removeFromCart(deal._id)
+    }
+    slots.map((st)=>{
+      if ((st._id.toString()) === (g.value.toString())){
+        setMovieId(st._id);
+        setCurrentslotqty(st.qty);
+        setTickprice(st.price);
+        return;
+      }
+    })
+
+    setCurrentSlot(y[x].text);
+  }
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -28,7 +95,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     
   }
   bd();
-  console.log(time);
+
   const popover = (
   <Popover id="popover-basic">
     <Popover.Title as="h3">Timings</Popover.Title>
@@ -44,233 +111,86 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
 
   const ActivityDeal = () => {
     return (
-      <div className="row">
-        <div className="col-6 col-lg-12">
-          <small>
-            Price:
-            <del>{deal.price}</del>
-          </small>
-          <p>
-            <strong>
-              After discount:{" "}
-              {deal.price - (deal.price * deal.discountPercent) / 100}
-            </strong>
-          </p>
-        </div>
-        <div className="col-6 col-lg-12">
-          <h1>Package details</h1>
-          <div className="col-6 col-lg-12">
-            <div className="d-flex justify-content-end">
-              <label>
-                select slot:
-                <select
-                  value={currentSlot}
-                  onChange={(e) => setCurrentSlot(e.target.value)}
-                  onBlur={(e) => setCurrentSlot(e.target.value)}
-                  disabled={!slots.length}
-                >
-                  {slots.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <div className="col-6 col-lg-12">
-              <div className="d-flex justify-content-end">
-                <p>Number of tickets: </p>
-                <div className="p-2">
-                  <button
-                    onClick={() => removeFromCart(deal._id)}
-                    className="btn btn-sm btn-primary"
-                    style={{
-                      backgroundColor: "purple",
-                      border: "purple",
-                    }}
-                  >
-                    -
-                  </button>
-                </div>
-                <div className="p-2" style={{ paddingTop: "10px !important" }}>
-                  {qty}
-                </div>
-                <div className="p-2">
-                  <button
-                    onClick={() =>
-                      addToCart(
-                        deal._id,
-                        deal.name,
-                        deal.price - (deal.price * deal.discountPercent) / 100,
-                        currentSlot
-                      )
-                    }
-                    className="btn btn-sm btn-primary"
-                    style={{
-                      backgroundColor: "purple",
-                      border: "purple",
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <>
+      </>
     );
   };
   const HotelDeal = () => {
     return (
-      <div className="row">
-        <div className="col-6 col-lg-12">
-          <small>
-            Price:
-            <del>{deal.price}</del>
-          </small>
-          <p>
-            <strong>
-              After discount:{" "}
-              {deal.price - (deal.price * deal.discountPercent) / 100}
-            </strong>
-          </p>
-        </div>
-        <div className="col-6 col-lg-12">
-          <h1>Package details</h1>
-          <div className="col-6 col-lg-12">
-            <div className="d-flex justify-content-end">
-              <h4>Rooms: </h4>
-              <div className="p-2">
-                <button
-                  onClick={() => removeFromCart(deal._id)}
-                  className="btn btn-sm btn-primary"
-                  style={{
-                    backgroundColor: "purple",
-                    border: "purple",
-                  }}
-                >
-                  -
-                </button>
-              </div>
-              <div className="p-2" style={{ paddingTop: "10px !important" }}>
-                {qty}
-              </div>
-              <div className="p-2">
-                <button
-                  onClick={() =>
-                    addToCart(
-                      deal._id,
-                      deal.name,
-                      deal.price - (deal.price * deal.discountPercent) / 100
-                    )
-                  }
-                  className="btn btn-sm btn-primary"
-                  style={{
-                    backgroundColor: "purple",
-                    border: "purple",
-                  }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <>
+      </>
     );
   };
   const MovieDeal = () => {
     return (
-
       <div className="row">
-        <div className="col-6 col-lg-12">
-          <small>
-            Price:
-            <del>{deal.price}</del>
-          </small>
-          <p>
-            <strong>
-              After discount:{" "}
-              {deal.price - (deal.price * deal.discountPercent) / 100}
-            </strong>
-          </p>
-        </div>
-        <div className="col-6 col-lg-12">
-          <div className="p-2" style={{ paddingTop: "10px !important" }}>
-            Seats:
-          </div>
-          {tickets.map((t) => (
-            <span
-              className="badge badge-primary"
-              key={t}
-              style={{ margin: "2px" }}
-            >
-              {t}
+      <div className="col-12 col-md-6">
+      <Form.Group>
+        <Form.Label>Choose Date :</Form.Label>
+        <Form.Control type="date" onChange={(e) => showSlots(e)
+        } value={date} />
+      </Form.Group>
 
+      </div>
+      <div className="col-12 col-md-6">
+        
+          <Form.Group>
+            <Form.Label>Choose Slot :</Form.Label>
+            <select id="slot-select" value={movieId} onChange={(e)=>movieSlot(e)}>
+              {!slots.length ? <option selected disabled style={{color:"red"}}>No Slots Available</option>:<option value="Select" selected>Select</option>}
+              {slots.map(slt=>
+                
+                <option key={slt._id} value={slt._id.toString()}>{slt.from+"-"+slt.to}</option>
+                
+                )}
+            </select>
+          </Form.Group>
+
+        <del className="text-muted">Rs. {tickprice}</del>{"  "}<strong>Rs. {tickprice-(deal.discountPercent*tickprice/100)}</strong>
+        
+      </div>
+      
+      {currentSlot.includes("-") && <div id="movieaddbutton" className="col-6 col-lg-12">
+          <div className="d-flex justify-content-center">
+            <div className="p-2">
               <button
-                className="close"
-                aria-label="Close"
-                style={{ fontSize: "100%", fontWeight: 1000 }}
-                type="click"
-                onClick={() => {
-                  let ticketArr = [...tickets];
-                  ticketArr = ticketArr.filter((ele) => ele !== t);
-                  setTickets(ticketArr);
-                  let remaining = [...datalist];
-                  remaining.push(t);
-                  remaining.sort();
-                  setDatalist(remaining);
-                  ticketArr = ticketArr.filter((ele) => ele !== t);
-                  setTickets(ticketArr);
-                  removeFromCart(t);
+                onClick={() => removeFromCart(deal._id)}
+                className="btn btn-sm btn-primary"
+                style={{
+                  backgroundColor: "purple",
+                  border: "purple",
                 }}
               >
-                <i className="fa fa-times" aria-hidden="true "></i>
+                - Remove
               </button>
-
-              {/* </i> */}
-            </span>
-          ))}
-
-          <input
-            type="search"
-            list="ticketsListData"
-            value={searchVal}
-            className="form-control prompt"
-            onChange={(e) => setSearchVal(e.target.value)}
-            autoComplete="on"
-            style={{ width: "100px" }}
-          />
-          <datalist id="ticketsListData">
-            {datalist.map((item) => (
-              <option value={item} key={item} />
-            ))}
-          </datalist>
-          <span className="input-group-btn">
-            <input
-              className="btn btn-default search-btn"
-              type="submit"
-              onClick={(e) => {
-                if (!searchVal) return;
-                const ticketArr = [...tickets];
-                ticketArr.push(searchVal);
-                addToCart(
-                  searchVal,
-                  deal.name + " " + searchVal,
-                  deal.price - (deal.price * deal.discountPercent) / 100
-                );
-                setTickets(ticketArr);
-
-                let remaining = [...datalist];
-                remaining = remaining.filter((t) => t !== searchVal);
-                setDatalist(remaining);
-                setSearchVal("");
-              }}
-            />
-          </span>
-        </div>
+            </div>
+            <div className="p-2" style={{ paddingTop: "10px !important" }}>
+              {qty?qty:""}
+            </div>
+            <div className="p-2">
+              <button
+                onClick={() =>
+                  addToCart(
+                    deal._id,
+                    deal.name+" ("+date+")-("+currentSlot+")",
+                    tickprice - (tickprice * deal.discountPercent) / 100,
+                    currentslotqty
+                  )
+                }
+                className="btn btn-sm btn-primary"
+                style={{
+                  backgroundColor: "purple",
+                  border: "purple",
+                }}
+              >
+                Add +
+              </button>
+            </div>
+          </div>
+        </div>}
+  
       </div>
+      
     );
   };
   const DefaultDeal = () => (
@@ -309,7 +229,8 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                   addToCart(
                     deal._id,
                     deal.name,
-                    deal.price - (deal.price * deal.discountPercent) / 100
+                    deal.price - (deal.price * deal.discountPercent) / 100,
+                    deal.qty
                   )
                 }
                 className="btn btn-sm btn-primary"
@@ -390,15 +311,15 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
             <div className="row">
               <div className="col-12 col-lg-9">
                 <p style={{ marginBottom: "10px",color:"green" }}>Free Cancellation</p>
-                <small>
+                {type !=='Movies'?<small>
                   <span className="text-muted">Valid For :</span> <strong> 1 Person</strong> |{" "}
                   <span className="text-muted">Valid on :</span><strong> {Object.keys(time).map((key)=> <strong> {key} |</strong>
         )} </strong> <br/>
                   
                   <span className="text-muted">Timings :</span><strong> {time["Sun"]} </strong><OverlayTrigger trigger="click" placement="right" overlay={popover}>
                   <button style={{backgroundColor:"inherit",color:"gray",border:"none",textDecoration:"underline"}}>SEE ALL</button></OverlayTrigger>
-                </small>
-                <br />
+                </small>:""}
+                
 
                 {type === "Movies" && <MovieDeal />}
                 {type === "Hotels" && <HotelDeal />}

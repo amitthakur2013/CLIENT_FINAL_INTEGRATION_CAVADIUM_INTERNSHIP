@@ -15,11 +15,19 @@ const VendorPage = ({ match }) => {
   const handleClosemap = () => setShowmap(false);
   const handleShowmap = () => setShowmap(true)
 
-  const addToCart = (id, name, price) => {
+  const addToCart = (id, name, price,avl_qty) => {
     const qty = (cart[id] ? cart[id].qty : 0) + 1;
+    if(qty>avl_qty){
+      return swal({
+        title: "Out of Stock!",
+        text: "",
+        icon: "error",
+        button: "Close",
+      });
+    }
     if (qty>=6) {
       return swal({
-        title: "Max Qty Limit reached!",
+        title: "You cannot buy more than 5 at a time",
         text: "",
         icon: "info",
         button: "Close",
