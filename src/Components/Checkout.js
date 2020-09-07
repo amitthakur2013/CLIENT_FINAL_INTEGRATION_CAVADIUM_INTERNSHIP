@@ -1,11 +1,14 @@
 import React,{useState,useEffect} from "react";
 import axios from 'axios';
+import swal from 'sweetalert';
 
 export const Checkout = () => {
   let user=JSON.parse(localStorage.getItem("user")).data;
-  const [amt,setAmt]=useState(0)
-  const [cartItem,setCartItem]=useState([])
-  const [useCredit,setUseCredit]=useState(false)
+  const [amt,setAmt]=useState(0);
+  const [cartItem,setCartItem]=useState([]);
+  const [useCredit,setUseCredit]=useState(false);
+  const [code,setCode]=useState("");
+  const [pap,setPap]=useState(false);
 
   useEffect(async ()=>{
   	try{
@@ -19,6 +22,112 @@ export const Checkout = () => {
 	  	console.log(err);
 	  }
   },[])
+
+  const placeOrder=(e)=>{
+  	e.preventDefault();
+  	alert("hmm");
+  }
+
+  const applyPromo=(e)=>{
+  	e.preventDefault();
+  	if(!code.length) {
+  		return swal({
+		        title: "Code cannot be blank",
+		        text: "",
+		        icon: "error",
+		        button: "Close",
+		      });
+  	}
+  	var cart=[]
+  	
+  	cartItem.map((ct)=>{
+  		var x={}
+  		x["deal"]=ct.id
+  		x["customer"]=user._id
+  		x["price"]=ct.price
+  		x["promocode"]=""
+  		x["discountedPrice"]=0
+  		cart.push(x);
+  	})
+  	
+  	axios.post("http://localhost:3124/api/promocode/apply",{
+  		cart,
+  		totalPrice:amt,
+  		code
+  	},{withCredentials:true})
+  	.then((resp)=>{
+  		console.log(resp);
+  		if(resp.data.object){
+		  		var m=resp.data.object.cart.reduce((val, key)=>{
+		  			return val+key.discountedPrice
+		  		},0);
+		  		setAmt(m);
+		  		setPap(true);
+		  		return swal({
+		        title: resp.data.message,
+		        text: "",
+		        icon: "success",
+		        button: "Close",
+		      });
+  		} else {
+  			setPap(false);
+  			return swal({
+		        title: resp.data,
+		        text: "",
+		        icon: "error",
+		        button: "Close",
+		      });
+  		}
+  	})
+  	.catch((err)=>console.log(err));
+  }
+
+  const removePromo=(e) => {
+  	e.preventDefault();
+  	//setPap(false);
+  	var cart=[]
+  	
+  	cartItem.map((ct)=>{
+  		var x={}
+  		x["deal"]=ct.id
+  		x["customer"]=user._id
+  		x["price"]=ct.price
+  		x["promocode"]=""
+  		x["discountedPrice"]=0
+  		cart.push(x);
+  	})
+  	axios.post("http://localhost:3124/api/promocode/remove",{
+  		cart,
+  		totalPrice:amt,
+  		code
+  	},{withCredentials:true})
+  	.then((resp)=>{
+  		console.log(resp);
+  		if(resp.data.object){
+		  		var m=resp.data.object.cart.reduce((val, key)=>{
+		  			return val+key.discountedPrice
+		  		},0);
+		  		setAmt(m);
+		  		setPap(false);
+		  		return swal({
+		        title: resp.data.message,
+		        text: "",
+		        icon: "success",
+		        button: "Close",
+		      });
+  		} else {
+  			setPap(true);
+  			return swal({
+		        title: resp.data,
+		        text: "",
+		        icon: "error",
+		        button: "Close",
+		      });
+  		}
+  	})
+  	.catch((err)=>console.log(err));
+
+  }
 
   return (
     <>
@@ -66,7 +175,7 @@ export const Checkout = () => {
                 <b className="text-muted">Total Amount:</b>{" "}
                 <span style={{ float: "" }}>
                   {" "}
-                  <strong>Rs. {amt}</strong>
+                  <strong>Rs. {amt}</strong>{!pap?"": <span style={{color:"orange"}}>( Promocode Applied )</span>}
                 </span>
                 <br />
                 <small className="text-muted">Inc. of all taxes</small>
@@ -74,9 +183,11 @@ export const Checkout = () => {
               <form action="">
                 <div className="form-group">
                   <label htmlFor="">Apply Promo code</label>
-                  <input className="form-control" type="text" />
+                  <input className="form-control" type="text" onChange={(e) => setCode(e.target.value)}/>
                 </div>
-                <button className="btn btn-success">Apply</button>
+                {!pap && <button onClick={(e)=>applyPromo(e)} className="btn btn-success">Apply</button>}
+                {"  "}
+                {pap && <button onClick={(e)=>removePromo(e)} className="btn btn-danger">Remove</button>}
                 <br />
                 <br />
                 <div class="form-group form-check">
@@ -93,9 +204,9 @@ export const Checkout = () => {
               </form>
               <p>
                 {" "}
-                <h3>Final Price : {useCredit ? amt-user.credit:amt}</h3>
+                <h3>Final Price : Rs. {useCredit ? amt-user.credit:amt}</h3>
               </p>
-              <button
+              <button onClick={(e)=>placeOrder(e)}
                 className="btn btn-primary btn-lg"
                 style={{
                   margin: "5px 0px 5px 0px",
