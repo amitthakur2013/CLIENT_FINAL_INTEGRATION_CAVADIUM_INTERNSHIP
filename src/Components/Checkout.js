@@ -1,6 +1,25 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
+import axios from 'axios';
 
 export const Checkout = () => {
+  let user=JSON.parse(localStorage.getItem("user")).data;
+  const [amt,setAmt]=useState(0)
+  const [cartItem,setCartItem]=useState([])
+  const [useCredit,setUseCredit]=useState(false)
+
+  useEffect(async ()=>{
+  	try{
+	  	const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
+	  	await setCartItem(resp.data);
+	  	var am=resp.data.reduce((val,key)=>{
+	  		return val+parseInt(key.price)
+	  	},0);
+	  	setAmt(am);
+	  } catch(err) {
+	  	console.log(err);
+	  }
+  },[])
+
   return (
     <>
       <div id="wrapper" style={{ marginTop: "200px" }}>
@@ -35,22 +54,19 @@ export const Checkout = () => {
                   <th>Qty</th>
                   <th>Price</th>
                 </tr>
+                {cartItem.map(ct=>
                 <tr>
-                  <td>Item 1</td>
-                  <td>1</td>
-                  <td>100</td>
-                </tr>
-                <tr>
-                  <td>Item 2</td>
-                  <td>3</td>
-                  <td>200</td>
-                </tr>
+                  <td>{ct.name}</td>
+                  <td>{ct.qty}</td>
+                  <td>{ct.price}</td>
+                </tr>)}
+                
               </table>
               <p className="card-text" style={{ padding: "5px 5px 0px 5px" }}>
                 <b className="text-muted">Total Amount:</b>{" "}
                 <span style={{ float: "" }}>
                   {" "}
-                  <strong>Rs. 400</strong>
+                  <strong>Rs. {amt}</strong>
                 </span>
                 <br />
                 <small className="text-muted">Inc. of all taxes</small>
@@ -68,15 +84,16 @@ export const Checkout = () => {
                     type="checkbox"
                     class="form-check-input"
                     id="exampleCheck1"
+                    onChange={(e)=>setUseCredit(!useCredit)}
                   />
                   <label class="form-check-label" for="exampleCheck1">
-                    Use Credit
+                    Use Credit <b style={{color:"green"}}>(Available Credit : <span style={{color:"black"}}>{!useCredit?user.credit:((user.credit-amt)>=0?(user.credit-amt):0)}</span>)</b>
                   </label>
                 </div>
               </form>
               <p>
                 {" "}
-                <h3>Final Price : 300</h3>
+                <h3>Final Price : {useCredit ? amt-user.credit:amt}</h3>
               </p>
               <button
                 className="btn btn-primary btn-lg"
