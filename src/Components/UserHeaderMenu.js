@@ -75,8 +75,8 @@ const UserHeaderMenu = () => {
             eventKey="promotions"
           />
           <Dropdown.Item
-            as={() => dropLink("signout", "Sign out", signoutLogo)}
-            eventKey="signout"
+            as={() => dropLink("checkout", "My Cart", signoutLogo)}
+            eventKey="checkout"
           />
         </Dropdown.Menu>
       )}

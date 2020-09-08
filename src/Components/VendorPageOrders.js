@@ -2,15 +2,66 @@ import React, { useState, useEffect } from "react";
 import OrderDealItem from "./OrderDealItem";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import swal from 'sweetalert';
 
 const VendorPageOrders = ({ cart }) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [cartKeys, setCartKeys] = useState([]);
+  const [showProceed,setShowProceed]=useState(false);
+  const [showAdd,setShowAdd]=useState(true);
+  const [cartItem,setCartItem]=useState([]);
+  
  if(localStorage.getItem("user")){
     var user=JSON.parse(localStorage.getItem("user")).data;
   }
+
+  const addtocart=async (e)=>{
+    if (cartItem.length){
+      return swal({
+            title: "Item already present in your Cart",
+            text: "Please clear your cart to proceed further",
+            icon: "error",
+            button: "Close",
+          });
+    }
+    e.preventDefault();
+    if(localStorage.getItem("user")){
+        let cartDetails=[]
+        
+        Object.keys(cart).map(key=>{
+          let a={};
+          a["id"]=key; 
+          a["name"]=cart[key].name;
+          a["price"]=cart[key].price;
+          a["qty"]=cart[key].qty;
+          cartDetails.push(a);
+        })
+        console.log(cartDetails);
+
+    await axios.post(`http://localhost:3124/api/customer/cart/${user._id}`,{
+            cartDetails
+          },{withCredentials:true})
+    setShowAdd(false);
+    setShowProceed(true);
+    }
+        
+  }
+
+  useEffect(()=>{
+    const getct= async()=>{
+      try{
+      const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
+      await setCartItem(resp.data);
+    } catch(err) {
+      console.log(err);
+    }
+   }
+   getct()
+
+  },[])
+
   useEffect(() => {
-   if(localStorage.getItem("user")){
+  /* if(localStorage.getItem("user")){
         let cartDetails=[]
         
         Object.keys(cart).map(key=>{
@@ -28,7 +79,10 @@ const VendorPageOrders = ({ cart }) => {
             cartDetails
           },{withCredentials:true})
         })();
-    }
+    }*/
+
+    
+
     const cartKeys = Object.keys(cart);
     setCartKeys(cartKeys);
     if (!cartKeys.length) return;
@@ -66,7 +120,20 @@ const VendorPageOrders = ({ cart }) => {
               <b className="text-muted">Total Amount:</b> <span style={{float:"right"}}> <strong>Rs. {totalAmount}</strong></span><br/>
               <small className="text-muted">Inc. of all taxes</small>
             </p>
-            {cartKeys.length && <button
+
+            {(cartKeys.length && showAdd) ?<button onClick={(e)=>addtocart(e)}
+              className="btn btn-primary"
+              style={{
+                margin: "5px 0px 5px 0px",
+                borderRadius: "0px",
+                borderColor: "orange",
+                backgroundColor: "orange",
+              }}
+            > 
+                Add to Cart
+            </button>:""}
+
+            {(cartKeys.length && showProceed) ? <button
               className="btn btn-primary"
               style={{
                 margin: "5px 0px 5px 0px",
@@ -75,10 +142,10 @@ const VendorPageOrders = ({ cart }) => {
                 backgroundColor: "purple",
               }}
             >
-              <Link to="/checkout" style={{ color: "white" }}>
+              <Link to="/user/checkout" style={{ color: "white" }}>
                 Proceed To Checkout
               </Link>
-            </button>}
+            </button>:""}
           </div>
         </div>
       </div>

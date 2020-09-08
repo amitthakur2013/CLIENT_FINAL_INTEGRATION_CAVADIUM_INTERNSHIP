@@ -37,7 +37,7 @@ function App() {
                   component={VendorPage}
                   {...props}
                 />
-                <Route exact path="/checkout" component={Checkout} {...props} />
+                <Route exact path="/user/checkout" component={Checkout} {...props} />
                 <Route path="/user" component={UserPage} {...props} />
                 <Route exact path="/" component={Homepage} {...props} />
                 <Route

@@ -9,19 +9,7 @@ export const Checkout = () => {
   const [useCredit,setUseCredit]=useState(false);
   const [code,setCode]=useState("");
   const [pap,setPap]=useState(false);
-
-  /*useEffect(async ()=>{
-  	try{
-	  	const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
-	  	await setCartItem(resp.data);
-	  	var am=resp.data.reduce((val,key)=>{
-	  		return val+(parseInt(key.price)*parseInt(key.qty))
-	  	},0);
-	  	setAmt(am);
-	  } catch(err) {
-	  	console.log(err);
-	  }
-  },[])*/
+  //const [finalprice,setFinalprice]=useState(0);
 
   useEffect(()=>{
    const getct= async()=>{
@@ -42,6 +30,20 @@ export const Checkout = () => {
   const placeOrder=(e)=>{
   	e.preventDefault();
   	alert("hmm");
+  }
+
+  const clearCart=async (e) => {
+    e.preventDefault();
+    try{
+      const resp=await axios.delete(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
+      console.log(resp);
+      setCartItem([]);
+      setUseCredit(false);
+      setAmt(0);
+      setCode("");
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   const applyPromo=(e)=>{
@@ -223,7 +225,7 @@ export const Checkout = () => {
               </form>
               <p>
                 {" "}
-                <h3>Final Price : Rs. {useCredit ? amt-user.credit:amt}</h3>
+                <h3>Final Price : Rs. {(useCredit && cartItem.length) ? amt-user.credit:amt}</h3>
               </p>
               <button onClick={(e)=>placeOrder(e)}
                 className="btn btn-primary btn-lg"
@@ -236,6 +238,17 @@ export const Checkout = () => {
               >
                 Place Order
               </button>
+              {cartItem.length ?<button onClick={(e)=>clearCart(e)}
+                className="btn btn-primary btn-lg"
+                style={{
+                  margin: "5px 0px 5px 0px",
+                  borderRadius: "5px",
+                  borderColor: "red",
+                  backgroundColor: "red",
+                }}
+              >
+                Clear Cart
+              </button>:""}
             </div>
           </div>
         </div>
