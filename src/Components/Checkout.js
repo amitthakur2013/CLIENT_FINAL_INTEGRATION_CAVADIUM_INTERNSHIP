@@ -34,6 +34,9 @@ export const Checkout = () => {
 
   const clearCart=async (e) => {
     e.preventDefault();
+    if(pap){
+      removePromo(e);
+    }
     try{
       const resp=await axios.delete(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
       console.log(resp);
@@ -41,6 +44,7 @@ export const Checkout = () => {
       setUseCredit(false);
       setAmt(0);
       setCode("");
+      document.getElementById("exampleCheck1").checked=false;
     } catch(err) {
       console.log(err);
     }
@@ -127,12 +131,12 @@ export const Checkout = () => {
 		  		},0);
 		  		setAmt(m);
 		  		setPap(false);
-		  		return swal({
+		  		return /*swal({
 		        title: resp.data.message,
 		        text: "",
 		        icon: "success",
 		        button: "Close",
-		      });
+		      });*/
   		} else {
   			setPap(true);
   			return swal({
@@ -204,7 +208,7 @@ export const Checkout = () => {
               <form action="">
                 <div className="form-group">
                   <label htmlFor="">Apply Promo code</label>
-                  <input className="form-control" type="text" onChange={(e) => setCode(e.target.value)}/>
+                  <input className="form-control" type="text" value={code} onChange={(e) => setCode(e.target.value)}/>
                 </div>
                 {!pap && <button onClick={(e)=>applyPromo(e)} className="btn btn-success">Apply</button>}
                 {"  "}
@@ -227,7 +231,7 @@ export const Checkout = () => {
                 {" "}
                 <h3>Final Price : Rs. {(useCredit && cartItem.length) ? amt-user.credit:amt}</h3>
               </p>
-              <button onClick={(e)=>placeOrder(e)}
+              {cartItem.length?<button onClick={(e)=>placeOrder(e)}
                 className="btn btn-primary btn-lg"
                 style={{
                   margin: "5px 0px 5px 0px",
@@ -237,7 +241,7 @@ export const Checkout = () => {
                 }}
               >
                 Place Order
-              </button>
+              </button>:""}{"  "}
               {cartItem.length ?<button onClick={(e)=>clearCart(e)}
                 className="btn btn-primary btn-lg"
                 style={{

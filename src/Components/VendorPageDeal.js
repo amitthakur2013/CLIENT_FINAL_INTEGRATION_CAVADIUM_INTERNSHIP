@@ -6,9 +6,10 @@ import swal from 'sweetalert';
 import moment from 'moment';
 
 const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
- // const [datalist, setDatalist] = useState(["A1", "A2", "A3"]);
-  //const [tickets, setTickets] = useState([]);
- // const [searchVal, setSearchVal] = useState("");
+ 
+  //Hotel
+
+
   const [date,setDate]=useState("");
   const [slots,setSlots]=useState([]);
   const [currentSlot, setCurrentSlot] = useState("");
@@ -108,6 +109,11 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     </Popover.Content>
   </Popover>
 );
+
+
+  //Hotel Deal Functionality
+
+  
 
   const ActivityDeal = () => {
     return (

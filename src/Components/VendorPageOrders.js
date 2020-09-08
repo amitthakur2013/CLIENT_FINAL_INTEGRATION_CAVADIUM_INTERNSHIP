@@ -10,7 +10,7 @@ const VendorPageOrders = ({ cart }) => {
   const [showProceed,setShowProceed]=useState(false);
   const [showAdd,setShowAdd]=useState(true);
   const [cartItem,setCartItem]=useState([]);
-  
+
  if(localStorage.getItem("user")){
     var user=JSON.parse(localStorage.getItem("user")).data;
   }
@@ -81,8 +81,6 @@ const VendorPageOrders = ({ cart }) => {
         })();
     }*/
 
-    
-
     const cartKeys = Object.keys(cart);
     setCartKeys(cartKeys);
     if (!cartKeys.length) return;
@@ -133,7 +131,8 @@ const VendorPageOrders = ({ cart }) => {
                 Add to Cart
             </button>:""}
 
-            {(cartKeys.length && showProceed) ? <button
+            {(cartKeys.length && showProceed) ? <Link to="/user/checkout" style={{ color: "white" }}>
+            <button
               className="btn btn-primary"
               style={{
                 margin: "5px 0px 5px 0px",
@@ -142,10 +141,9 @@ const VendorPageOrders = ({ cart }) => {
                 backgroundColor: "purple",
               }}
             >
-              <Link to="/user/checkout" style={{ color: "white" }}>
                 Proceed To Checkout
-              </Link>
-            </button>:""}
+            </button> 
+            </Link>:""}
           </div>
         </div>
       </div>
