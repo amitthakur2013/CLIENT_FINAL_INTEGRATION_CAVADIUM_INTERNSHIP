@@ -6,11 +6,11 @@ import axios from 'axios';
 const VendorPageOrders = ({ cart }) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [cartKeys, setCartKeys] = useState([]);
-  if(localStorage.getItem("user")){
-  var user=JSON.parse(localStorage.getItem("user")).data;
-}
+ if(localStorage.getItem("user")){
+    var user=JSON.parse(localStorage.getItem("user")).data;
+  }
   useEffect(() => {
-    if(localStorage.getItem("user")){
+   if(localStorage.getItem("user")){
         let cartDetails=[]
         
         Object.keys(cart).map(key=>{

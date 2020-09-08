@@ -10,7 +10,7 @@ export const Checkout = () => {
   const [code,setCode]=useState("");
   const [pap,setPap]=useState(false);
 
-  useEffect(async ()=>{
+  /*useEffect(async ()=>{
   	try{
 	  	const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
 	  	await setCartItem(resp.data);
@@ -21,6 +21,22 @@ export const Checkout = () => {
 	  } catch(err) {
 	  	console.log(err);
 	  }
+  },[])*/
+
+  useEffect(()=>{
+   const getct= async()=>{
+      try{
+      const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
+      await setCartItem(resp.data);
+      var am=resp.data.reduce((val,key)=>{
+        return val+(parseInt(key.price)*parseInt(key.qty))
+      },0);
+      setAmt(am);
+    } catch(err) {
+      console.log(err);
+    }
+   }
+   getct()
   },[])
 
   const placeOrder=(e)=>{

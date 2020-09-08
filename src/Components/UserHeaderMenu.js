@@ -11,6 +11,10 @@ import accountLogo from "../assets/user.svg";
 
 const UserHeaderMenu = () => {
   const [show, setShow] = useState(false);
+  //const [user,setUser]=useState(undefined);
+
+  const user=JSON.parse(localStorage.getItem("user")).data;
+
   const dropLink = (url, label, logo) => (
     <Link
       onClick={() => setShow(false)}
@@ -29,8 +33,7 @@ const UserHeaderMenu = () => {
         as={CustomToggle}
         setShow={setShow}
         id="dropdown-custom-components"
-      >
-        My Account
+      >My Account
       </Dropdown.Toggle>
 
       {show && (
@@ -44,7 +47,7 @@ const UserHeaderMenu = () => {
                       style={{ maxWidth: "20%", marginRight: "5px" }}
                       src={accountLogo}
                     />
-                    Name ABC
+                    {user.name}
                   </Link>
                 </div>
               );
