@@ -16,6 +16,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const [isavlroom,setisavlroom]=useState(false)
   const [mealprice,setmealprice]=useState(0);
   const [mealdesc,setmealdesc]=useState("");
+  const [showbooknow,setshowbooknow]=useState(true);
   //const [extraAdult,setextraAdult]=useState(0);
   //const [extraChild,setextraChild]=useState(0);
 
@@ -57,7 +58,8 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     var ea=(adult-deal.adult)*deal.maxAdultPrice*no_of_days;
     var ec=(child-deal.child)*deal.maxChildPrice*no_of_days;
     finalprice=np+mp+ea+ec;
-    alert(finalprice);
+    addToCart(deal._id,deal.name+"( "+no_of_days+" nights )"+"-"+mealdesc,finalprice,-1,getDatesArray(checkin,checkout));
+    setshowbooknow(false);
 
 
   }
@@ -370,6 +372,15 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                 )}
               </ul>
             </div>  
+            <div style={{marginTop:"5%"}}>
+            <button onClick={handleShow} 
+                  className="btn btn-primary"
+                  style={{ backgroundColor: "inherit", border: "1px solid purple", color:"purple" }}
+                >
+                  <strong>View Details</strong>
+                </button>
+                </div>
+              
           </div>
           <div className="col-12 col-md-9">
             <div style={{marginLeft:"0.5px"}}  className="row">
@@ -508,17 +519,29 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                 </div>
               </div>
               <div className="col-12 col-md-4 mt-4">
-                  <button 
+                  {showbooknow?<button 
                   onClick={(e)=>finalhoteldeal(e)}
 
 
-                  className="btn btn-info btn-block">Book Now</button>
+                  className="btn btn-info btn-block">Book Now</button>:
+
+                  <button 
+                  onClick={()=>{
+
+                    removeFromCart(deal._id)
+                    setshowbooknow(true);
+                  }}
+
+
+                  className="btn btn-danger btn-block">Cancel</button>}
+
                   
               </div>
 
             </div>
           </div>
 
+            
         </div>
       </>
     );
@@ -586,7 +609,8 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                     deal._id,
                     deal.name+" ("+date+")-("+currentSlot+")",
                     tickprice - (tickprice * deal.discountPercent) / 100,
-                    currentslotqty
+                    currentslotqty,
+                    []
                   )
                 }
                 className="btn btn-sm btn-primary"
@@ -642,7 +666,8 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                     deal._id,
                     deal.name,
                     deal.price - (deal.price * deal.discountPercent) / 100,
-                    deal.qty
+                    deal.qty,
+                    []
                   )
                 }
                 className="btn btn-sm btn-primary"

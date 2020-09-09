@@ -34,6 +34,7 @@ const VendorPageOrders = ({ cart }) => {
           a["name"]=cart[key].name;
           a["price"]=cart[key].price;
           a["qty"]=cart[key].qty;
+          a["slot"]=cart[key].slot;
           cartDetails.push(a);
         })
         console.log(cartDetails);

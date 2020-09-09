@@ -10,12 +10,15 @@ const VendorPage = ({ match }) => {
   const [deals, setDeals] = useState([]);
   const [vendor, setVendor] = useState({});
   const [cart, setCart] = useState({});
+  const [hotelcart,sethotelcart]=useState({});
 
   const [showmap, setShowmap] = useState(false);
   const handleClosemap = () => setShowmap(false);
   const handleShowmap = () => setShowmap(true)
 
-  const addToCart = (id, name, price,avl_qty) => {
+
+
+  const addToCart = (id, name, price,avl_qty,slot) => {
     if(!localStorage.getItem("user")){
       return swal({
         title: "Please LogIn to Add to Cart!",
@@ -25,7 +28,8 @@ const VendorPage = ({ match }) => {
       });
     }
     const qty = (cart[id] ? cart[id].qty : 0) + 1;
-    if(qty>avl_qty){
+    if (avl_qty!==-1){
+      if(qty>avl_qty){
       return swal({
         title: "Out of Stock!",
         text: "",
@@ -41,12 +45,16 @@ const VendorPage = ({ match }) => {
         button: "Close",
       });
     }
+
+    }
+    
     const newCart = { ...cart };
 
     newCart[id] = {
       name,
       qty,
       price,
+      slot
     };
     setCart(newCart);
   };

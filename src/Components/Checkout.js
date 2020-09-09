@@ -17,7 +17,7 @@ export const Checkout = () => {
       const resp=await axios.get(`http://localhost:3124/api/customer/cart/${user._id}`,{withCredentials:true});
       await setCartItem(resp.data);
       var am=resp.data.reduce((val,key)=>{
-        return val+(parseInt(key.price)*parseInt(key.qty))
+        return val+(key.price*parseInt(key.qty))
       },0);
       setAmt(am);
     } catch(err) {
