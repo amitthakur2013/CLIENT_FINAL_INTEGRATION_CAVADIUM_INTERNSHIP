@@ -10,6 +10,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   //Hotel
 
 
+
   const [date,setDate]=useState("");
   const [slots,setSlots]=useState([]);
   const [currentSlot, setCurrentSlot] = useState("");
@@ -113,20 +114,90 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
 
   //Hotel Deal Functionality
 
-  
 
-  const ActivityDeal = () => {
-    return (
-      <>
-      </>
-    );
-  };
+
   const HotelDeal = () => {
     return (
       <>
+        <div
+          className="row"
+          style={{
+            backgroundColor: "white",
+            padding: "10px 5px 10px 5px",
+            borderRadius: "3px",
+            border: "1px solid #E0DEDE",
+            boxShadow: "-6px -6px 16px #fff, 6px 6px 16px #d1cdc7",
+          }}
+        >
+          <div className="col-12 col-md-3">
+            <div className="row">
+              <img
+              alt={deal.name}
+              src={`http://localhost:3124/uploads/${deal.img}`}
+              className="img-fluid"
+              style={{ borderRadius: "5px", width: "100%" }}
+              />
+            </div>
+            <strong style={{fontSize:".85rem"}}>Amenities</strong>
+            <div style={{backgroundColor:"#f4f4f4",marginTop:"2px",borderRadius:"3px"}} className="row p-1">
+              <ul style={{listStyleType: "none"}}>
+              {deal.amenities.split(",").map((am)=>
+                  <li className="text-muted" style={{fontSize:".75rem"}}>
+                    <span>&#10003;</span> {am}
+                  </li>
+                )}
+              </ul>
+            </div>  
+          </div>
+          <div className="col-12 col-md-9">
+            <div style={{marginLeft:"0.5px"}}  className="row">
+              <strong>{deal.name}</strong>
+            </div>
+            <div className="row">
+              <div className="col-12 col-md-4">
+                <strong style={{fontSize:".80rem"}}>Occupancies</strong><br/>
+                <span style={{fontSize:".80rem"}} className="text-muted">Adult:</span> {deal.adult}
+                <span style={{fontSize:".80rem"}} className="text-muted">|Child:</span> {deal.child}<br/>
+                <strong style={{fontSize:".80rem"}}>Max Occupancies</strong><br/>
+                <span style={{fontSize:".80rem"}} className="text-muted">Max Adult:</span> {deal.maxAdult}
+                <span style={{fontSize:".80rem"}} className="text-muted">|Max Child:</span> {deal.maxChild}
+              </div>
+
+              <div className="col-12 col-md-3">
+                <strong style={{fontSize:".80rem"}}>Inclusions</strong><br/>
+                <ul style={{listStyleType: "none"}}>
+                  {deal.inclusions.split(",").map((am)=>
+                      <li className="text-muted" style={{fontSize:".80rem"}}>
+                        <span>&#10003;</span> {am}
+                      </li>
+                    )}
+                  </ul>
+              </div>
+
+              <div className="col-12 col-md-5">
+                <strong style={{fontSize:".80rem"}}>Per night</strong><br/>
+                <Badge style={{float:"right"}} variant="info">{deal.discountPercent}% OFF</Badge>
+                <del style={{fontSize:".70rem"}} className="text-muted">Rs. {deal.price_per_night}</del>{" "}
+                <strong style={{fontSize:".85rem"}}>Rs. {deal.price_per_night-((deal.price_per_night*deal.discountPercent)/100)}</strong>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
       </>
     );
   };
+
+
+   const ActivityDeal = () => {
+    return (
+      <>
+      </>
+    );
+  };
+
+
   const MovieDeal = () => {
     return (
       <div className="row">
@@ -290,7 +361,8 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
         </Modal.Footer>
       </Modal>
       <div style={{ marginBottom: "10px" }}>
-        <div
+      {type==='Hotel' && <HotelDeal />}
+        {type!=='Hotel' &&<div
           className="row"
           style={{
             backgroundColor: "white",
@@ -317,7 +389,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
             <div className="row">
               <div className="col-12 col-lg-9">
                 <p style={{ marginBottom: "10px",color:"green" }}>Free Cancellation</p>
-                {type !=='Movies'?<small>
+                {(type !=='Movies' && type !=='Hotel')?<small>
                   <span className="text-muted">Valid For :</span> <strong> 1 Person</strong> |{" "}
                   <span className="text-muted">Valid on :</span><strong> {Object.keys(time).map((key)=> <strong> {key} |</strong>
         )} </strong> <br/>
@@ -347,7 +419,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </Fragment>
   );
