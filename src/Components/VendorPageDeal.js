@@ -14,6 +14,103 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
   const [adult,setAdult]=useState(deal.adult);
   const [child,setChild]=useState(deal.child);
   const [isavlroom,setisavlroom]=useState(false)
+  const [mealprice,setmealprice]=useState(0);
+  const [mealdesc,setmealdesc]=useState("");
+  //const [extraAdult,setextraAdult]=useState(0);
+  //const [extraChild,setextraChild]=useState(0);
+
+  const finalhoteldeal=(e) => {
+    e.preventDefault();
+    if(!(checkin && checkout)) {
+      return swal({
+                      title: "Pls Select Checkin and Checkout date!",
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });  
+    }
+
+    if(!isavlroom) {
+    
+      if(!room_check_avl) {
+          return swal({
+                          title: "Sorry! Room not available",
+                          text: "",
+                          icon: "error",
+                          button: "Close",
+                        });  
+
+            }
+    }
+    var finalprice=0;
+    var no_of_days=new Date(checkout).getDate()-new Date(checkin).getDate()+1;
+    if(no_of_days<deal.minimum_nights){
+      return swal({
+                      title: `Minimum booking of ${deal.minimum_nights} nights is required!`,
+                      text: "",
+                      icon: "info",
+                      button: "Close",
+                    });  
+    }
+    var np=(deal.price_per_night-((deal.price_per_night*deal.discountPercent)/100))*no_of_days;
+    var mp=mealprice*no_of_days;
+    var ea=(adult-deal.adult)*deal.maxAdultPrice*no_of_days;
+    var ec=(child-deal.child)*deal.maxChildPrice*no_of_days;
+    finalprice=np+mp+ea+ec;
+    alert(finalprice);
+
+
+  }
+
+  const room_check_avl=()=>{
+    if(!(checkin.length && checkout.length)){
+      return swal({
+                      title: "Pls Select check in and check out date",
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+    }
+    
+    const dtarr=getDatesArray(checkin,checkout);
+    for (var i=0;i<dtarr.length;i++) {
+      deal.dates_available.map((dt)=>{
+        if (dt.day === dtarr[i])
+        {
+          if (!dt.qty){
+            return false;
+          }
+        }
+      })
+    }
+    return true;
+  }
+
+  const addmeal=(e)=>{
+    e.preventDefault();
+
+    var a=document.getElementById('meal-select').value.trim();
+    if (a=== 'select'){
+      return swal({
+                      title: "Pls Select appropriate meal!",
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    }); 
+    }
+    setmealdesc(a);
+    var b=a.indexOf("@")
+    var c=parseInt(a.substring(b+1,a.length))
+    setmealprice(c);
+  }
+
+  const removemeal=(e)=>{
+    e.preventDefault();
+    setmealdesc("");
+    setmealprice(0);
+
+
+  }
 
   const checkavailability=(e)=>{
     e.preventDefault();
@@ -380,9 +477,45 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                     
               </div>
               <div className="col-12 col-md-4">
+                
+                {(adult-deal.adult)?<><small style={{color:"orange"}}>Extra Adult : </small><small><strong>{adult-deal.adult}</strong></small></>:""}<br/>
+                {(child-deal.child)?<><small style={{color:"orange"}}>Extra Child : </small><small><strong>{child-deal.child}</strong></small></>:""}
+
 
               </div>
               
+            </div>
+            <hr/>
+            <div className="row ">
+              <div className="col-12 col-md-8">
+                <div style={{marginLeft:"0.5px"}} className="row">
+                  <strong >Add Meal</strong>
+                </div>
+                <div className="row mt-1">
+                    <div className="col-12 col-md-5">
+                      <select id="meal-select" className="form-control" >
+                      <option selected>select</option>
+                      {deal.meal.map(d=>
+                        <option>{d.meal_type +"-@"+d.meal_price}</option>
+                      )}
+                      </select>
+                      <small style={{color:"orange"}}>{mealdesc}</small> 
+                    </div>
+                    <div className="col-12 col-md-3">
+                      {!mealprice?<button onClick={(e)=>addmeal(e)} className="btn btn-sm btn-primary">Add</button>:
+                      <button onClick={(e)=>removemeal(e)} className="btn btn-sm btn-danger">Remove</button>}
+                    </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-4 mt-4">
+                  <button 
+                  onClick={(e)=>finalhoteldeal(e)}
+
+
+                  className="btn btn-info btn-block">Book Now</button>
+                  
+              </div>
+
             </div>
           </div>
 
