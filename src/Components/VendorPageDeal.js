@@ -5,11 +5,136 @@ import { Markup } from 'interweave';
 import swal from 'sweetalert';
 import moment from 'moment';
 
+
 const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
  
   //Hotel
+  const [checkin, setcheckin]=useState("");
+  const [checkout, setcheckout]=useState("");
+  const [adult,setAdult]=useState(deal.adult);
+  const [child,setChild]=useState(deal.child);
+  const [isavlroom,setisavlroom]=useState(false)
 
+  const checkavailability=(e)=>{
+    e.preventDefault();
+    if(!(checkin.length && checkout.length)){
+      return swal({
+                      title: "Pls Select check in and check out date",
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+    }
+    
+    const dtarr=getDatesArray(checkin,checkout);
+    for (var i=0;i<dtarr.length;i++) {
+      deal.dates_available.map((dt)=>{
+        if (dt.day === dtarr[i])
+        {
+          if (!dt.qty){
+            return setisavlroom(false);
+          }
+        }
+      })
+    }
+    return setisavlroom(true);
+  }
 
+  const getDatesArray= (start, end) => {
+        start=new Date(start)
+        start.setDate(start.getDate()-1)
+        let initialTime = moment(start).format();
+        let endTime = moment(end).format();
+        let arrTime = [];
+      
+        for (
+          let q = initialTime;
+          moment(q).isBefore(endTime); // q = moment().add(1, "day").format()
+
+        ) {
+          q = moment(q).add(1, "day").format();
+        
+          arrTime.push(moment(q).format("YYYY-MM-DD"));
+        }
+        return arrTime;
+      };
+
+  const handlecheckin=(e)=>{
+    if(new Date(e.target.value) < checkDate || !(new Date(e.target.value)<=new Date(deal.valid.to) && new Date(e.target.value)>=new Date(deal.valid.from))) {
+             return swal({
+                      title: `pls select between ${deal.valid.from} and ${deal.valid.to}`,
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+            }
+    if(checkout.length){
+      if(!(new Date(e.target.value)<=new Date(checkout))){
+         return swal({
+                      title: `pls select between ${deal.valid.from} and ${checkout}`,
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+            
+      }
+    }
+    
+    setcheckin(e.target.value);
+  }
+
+  const handlecheckout=(e)=> {
+    if(!checkin.length){
+       return swal({
+                      title: "Pls select checkin date first",
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+    }
+    if(new Date(e.target.value) < checkDate || !(new Date(e.target.value)<=new Date(deal.valid.to) && new Date(e.target.value)>=new Date(checkin))) {
+             return swal({
+                      title: `pls select between ${checkin} and ${deal.valid.to}`,
+                      text: "",
+                      icon: "error",
+                      button: "Close",
+                    });
+            }
+    setcheckout(e.target.value);
+
+  }
+
+  const increaseadult=(e)=>{
+    e.preventDefault();
+    if((adult+1)<=deal.maxAdult){
+      setAdult(adult+1);
+    }
+    return;
+  }
+
+  const decreaseadult=(e)=>{
+     e.preventDefault();
+    if(adult-1>=deal.adult){
+      setAdult(adult-1);
+    }
+    return;
+  }
+
+  const increasechild=(e)=>{
+    e.preventDefault();
+    if((child+1)<=deal.maxChild){
+      setChild(child+1);
+    }
+    return;
+  }
+
+  const decreasechild=(e)=>{
+     e.preventDefault();
+    if(child-1>=deal.child){
+      setChild(child-1);
+    }
+    return;
+  }
 
   const [date,setDate]=useState("");
   const [slots,setSlots]=useState([]);
@@ -172,15 +297,92 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                       </li>
                     )}
                   </ul>
+
               </div>
 
               <div className="col-12 col-md-5">
+                
                 <strong style={{fontSize:".80rem"}}>Per night</strong><br/>
                 <Badge style={{float:"right"}} variant="info">{deal.discountPercent}% OFF</Badge>
                 <del style={{fontSize:".70rem"}} className="text-muted">Rs. {deal.price_per_night}</del>{" "}
                 <strong style={{fontSize:".85rem"}}>Rs. {deal.price_per_night-((deal.price_per_night*deal.discountPercent)/100)}</strong>
+                
+          
               </div>
 
+            </div>
+            <hr/>
+            <div className="row mt-1">
+              <div className="col-12 col-md-6">
+                <strong>Check in</strong>
+                <input className="form-control" value={checkin} type="date" onChange={(e)=>handlecheckin(e)}/><br/>
+                <button className="btn btn-danger" onClick={(e)=>checkavailability(e)}>Check Availability</button>
+              </div>
+              <div className="col-12 col-md-6">
+                <strong>Check out</strong>
+                <input className="form-control" value={checkout} type="date" onChange={(e)=>handlecheckout(e)}/><br/>
+                {isavlroom?<strong style={{color:"green"}}>Available</strong>:<strong style={{color:"red"}}>Not Available</strong>}
+
+              </div>
+              
+            </div>
+            <hr/>
+            <div className="row mt-2">
+              <div className="col-12 col-md-4">
+              <strong>Adult: </strong>
+                  <button
+                    onClick={(e) => decreaseadult(e)}
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    -
+                  </button>{" "}
+                  <span>{adult}</span>{" "}
+                    <button
+                    onClick={(e) => increaseadult(e)}
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    +
+                  </button><br/>
+                    <small className="text-muted"><i>add extra adult @ Rs.{deal.maxAdultPrice}</i></small>
+              </div>
+              <div className="col-12 col-md-4">
+                <strong st>Child: </strong>
+                  <button
+                    onClick={(e) => decreasechild(e)}
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    -
+                  </button>{" "}
+                  <span>{child}</span>{" "}
+                    <button
+                    onClick={(e) => increasechild(e)}
+                    className="btn btn-sm btn-primary"
+                    style={{
+                      backgroundColor: "purple",
+                      border: "purple",
+                    }}
+                  >
+                    +
+                  </button><br/>
+                  <small className="text-muted"><i>add extra child @ Rs.{deal.maxChildPrice}</i></small>
+                    
+              </div>
+              <div className="col-12 col-md-4">
+
+              </div>
+              
             </div>
           </div>
 
