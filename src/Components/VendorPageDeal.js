@@ -31,9 +31,9 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                     });  
     }
 
-    if(!isavlroom) {
+  
     
-      if(!room_check_avl) {
+      if(!room_check_avl()) {
           return swal({
                           title: "Sorry! Room not available",
                           text: "",
@@ -42,7 +42,7 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
                         });  
 
             }
-    }
+    
     var finalprice=0;
     var no_of_days=new Date(checkout).getDate()-new Date(checkin).getDate()+1;
     if(no_of_days<deal.minimum_nights){
@@ -75,16 +75,19 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     }
     
     const dtarr=getDatesArray(checkin,checkout);
-    for (var i=0;i<dtarr.length;i++) {
+    //console.log(dtarr)
+    var flag=0;
       deal.dates_available.map((dt)=>{
-        if (dt.day === dtarr[i])
-        {
-          if (!dt.qty){
-            return false;
+        if (dtarr.includes(dt.day.toString())){
+          
+          if(dt.qty===0){
+            flag=1
+            return
           }
         }
       })
-    }
+      if (flag==1) return false;
+    
     return true;
   }
 
@@ -126,16 +129,19 @@ const VendorPageDeal = ({ deal, qty, addToCart, removeFromCart, type }) => {
     }
     
     const dtarr=getDatesArray(checkin,checkout);
-    for (var i=0;i<dtarr.length;i++) {
+    //console.log(dtarr)
+    var flag=0;
       deal.dates_available.map((dt)=>{
-        if (dt.day === dtarr[i])
-        {
-          if (!dt.qty){
-            return setisavlroom(false);
+        if (dtarr.includes(dt.day.toString())){
+          
+          if(dt.qty===0){
+            flag=1
+            return
           }
         }
       })
-    }
+      if (flag==1) return setisavlroom(false);
+    
     return setisavlroom(true);
   }
 

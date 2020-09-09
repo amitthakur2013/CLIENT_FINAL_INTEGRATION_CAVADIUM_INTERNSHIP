@@ -29,7 +29,21 @@ export const Checkout = () => {
 
   const placeOrder=(e)=>{
   	e.preventDefault();
-  	alert("hmm");
+    cartItem.map(async (cart)=>{
+      const order=await axios.post("http://localhost:3124/api/orders/new_hotel",{
+      deal:cart.id,
+      discountedPrice:cart.price,
+      userid:user._id,
+      slot:cart.slot,
+      promocode:code
+
+    },{withCredentials:true})
+      console.log(order)
+    clearCart(e);
+
+      
+    })
+  	
   }
 
   const clearCart=async (e) => {
