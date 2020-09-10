@@ -39,10 +39,15 @@ export const Checkout = () => {
 
     },{withCredentials:true})
       console.log(order)
-    clearCart(e);
-
       
     })
+    clearCart(e);
+    return swal({
+            title: "Order placed Successfully",
+            text: "",
+            icon: "success",
+            button: "Close",
+          });
   	
   }
 
